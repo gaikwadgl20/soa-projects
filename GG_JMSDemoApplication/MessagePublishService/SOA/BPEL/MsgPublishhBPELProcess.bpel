@@ -1,0 +1,104 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Mon Dec 13 18:43:08 IST 2021
+  Author:  ADMIN
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="MsgPublishhBPELProcess"
+               targetNamespace="http://xmlns.oracle.com/GG_JMSDemoApplication/MessagePublishService/MsgPublishhBPELProcess"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/GG_JMSDemoApplication/MessagePublishService/MsgPublishhBPELProcess"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:ui="http://xmlns.oracle.com/soa/designer"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/jms/GG_JMSDemoApplication/MessagePublishService/PublishToQueue"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/jms/GG_JMSDemoApplication/MessagePublishService/PublishToTopicService">
+
+    <import ui:processWSDL="true" namespace="http://xmlns.oracle.com/GG_JMSDemoApplication/MessagePublishService/MsgPublishhBPELProcess" location="../WSDLs/MsgPublishhBPELProcess.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="msgpublishhbpelprocess_client" partnerLinkType="client:MsgPublishhBPELProcess" myRole="MsgPublishhBPELProcessProvider"/>
+    <partnerLink name="PublishToQueue" partnerLinkType="ns1:Produce_Message_plt" partnerRole="Produce_Message_role"/>
+    <partnerLink name="PublishToTopicService" partnerLinkType="ns2:Produce_Message_plt"
+                 partnerRole="Produce_Message_role"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:MsgPublishhBPELProcessRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:MsgPublishhBPELProcessResponseMessage"/>
+    <variable name="InvokeJMSAdapter_Produce_Message_InputVariable" messageType="ns1:Produce_Message_msg"/>
+    <variable name="InvokeJMSTopicAdapter_Produce_Message_InputVariable" messageType="ns2:Produce_Message_msg"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in MsgPublishhBPELProcess.wsdl) -->
+    <receive name="receiveInput" partnerLink="msgpublishhbpelprocess_client" portType="client:MsgPublishhBPELProcess" operation="process" variable="inputVariable" createInstance="yes"/>
+    <assign name="AssignInput">
+      <copy>
+        <from>$inputVariable.payload/client:input</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$InvokeJMSAdapter_Produce_Message_InputVariable.body/client:input</to>
+      </copy>
+      <copy>
+        <from>$inputVariable.payload/client:input</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$InvokeJMSTopicAdapter_Produce_Message_InputVariable.body/client:input</to>
+      </copy>
+    </assign>
+    <invoke name="InvokeJMSAdapter" partnerLink="PublishToQueue"
+            portType="ns1:Produce_Message_ptt" operation="Produce_Message"
+            inputVariable="InvokeJMSAdapter_Produce_Message_InputVariable" bpelx:invokeAsDetail="no"/>
+    <invoke name="InvokeJMSTopicAdapter" partnerLink="PublishToTopicService"
+            portType="ns2:Produce_Message_ptt" operation="Produce_Message"
+            inputVariable="InvokeJMSTopicAdapter_Produce_Message_InputVariable" bpelx:invokeAsDetail="no"/>
+    <assign name="AssignOutput">
+      <copy>
+        <from>'Message published to Queue and Topic.'</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/client:result</to>
+      </copy>
+    </assign>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="msgpublishhbpelprocess_client" portType="client:MsgPublishhBPELProcess" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

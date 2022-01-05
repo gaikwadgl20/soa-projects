@@ -1,0 +1,34 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="BusinessFaultDemoService"
+     targetNamespace="http://xmlns.oracle.com/SOATestApplication/ServiceThatThrowFault/BusinessFaultDemoService"
+     xmlns:tns="http://xmlns.oracle.com/SOATestApplication/ServiceThatThrowFault/BusinessFaultDemoService"
+     xmlns:inp1="http://www.example.org"
+     xmlns:inp2="http://www.example.org"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    >
+    <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://www.example.org" schemaLocation="../Schemas/RequestResponse.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://www.example.org" schemaLocation="../Schemas/FaultSchema.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="requestMessage">
+        <wsdl:part name="requestMessage" element="inp1:Request"/>
+    </wsdl:message>
+    <wsdl:message name="replyMessage">
+        <wsdl:part name="replyMessage" element="inp1:Response"/>
+    </wsdl:message>
+    <wsdl:message name="faultMessage">
+        <wsdl:part name="faultMessage" element="inp1:FaultElement"/>
+    </wsdl:message>
+    <wsdl:portType name="execute_ptt">
+        <wsdl:operation name="generateFault">
+            <wsdl:input message="tns:requestMessage"/>
+            <wsdl:output message="tns:replyMessage"/>
+            <wsdl:fault name="generateFaultfault" message="tns:faultMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

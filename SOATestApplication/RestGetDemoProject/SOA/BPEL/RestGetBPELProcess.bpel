@@ -1,0 +1,63 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer
+
+  Created: Thu Dec 09 16:57:11 IST 2021
+  Author:  ADMIN
+  Type: BPEL 2.0 Process
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="RestGetBPELProcess"
+               targetNamespace="http://xmlns.oracle.com/SOATestApplication/RestGetDemoProject/RestGetBPELProcess"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/SOATestApplication/RestGetDemoProject/RestGetBPELProcess"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+               xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns1="json"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap">
+
+  <!--
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC
+     Set of activities coordinating the flow of messages across the
+     services integrated within this business process
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <partnerLink name="RestGetService" bpelx:wadl="yes"/>
+  </partnerLinks>
+  <variables>
+    <variable name="DummyVariable" type="xsd:string"/>
+    <variable name="fnameVar" type="xsd:string"/>
+    <variable name="lnameVar" type="xsd:string"/>
+    <variable name="JsonObjVar" bpelx:json="string"/>
+  </variables>
+  <sequence name="main">
+    <receive name="GetEmpNameReceive" partnerLink="RestGetService" variable="DummyVariable"
+             bpelx:method="GetEmpNameMethod" createInstance="yes">
+      <bpelx:fromProperties>
+        <bpelx:fromProperty name="rest.query.fname" variable="fnameVar"/>
+        <bpelx:fromProperty name="rest.query.lname" variable="lnameVar"/>
+      </bpelx:fromProperties>
+    </receive>
+    <assign name="AssignCompleteName">
+      <copy>
+        <from>concat('Hello  ' ,$fnameVar, ' ' , $fnameVar)</from>
+        <to expressionLanguage="javascript">process.JsonObjVar</to>
+      </copy>
+    </assign>
+    <reply name="ReplyToWebService" partnerLink="RestGetService" variable="JsonObjVar" bpelx:method="GetEmpNameMethod"/>
+  </sequence>
+</process>

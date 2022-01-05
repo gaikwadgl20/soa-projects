@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org"
+            targetNamespace="http://www.example.org" elementFormDefault="qualified">
+    <xsd:element name="studentDetails">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element type="xsd:string" name="ID"/>
+                <xsd:element type="xsd:string" name="Name"/>
+                <xsd:element type="xsd:string" name="Gender"/>
+                <xsd:element type="xsd:string" name="Class"/>
+                <xsd:element type="xsd:string" name="Seat"/>
+                <xsd:element type="xsd:string" name="Club"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+  
+</xsd:schema>

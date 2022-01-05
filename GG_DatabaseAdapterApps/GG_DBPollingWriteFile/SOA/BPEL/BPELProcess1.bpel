@@ -1,0 +1,52 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer
+
+  Created: Wed Dec 15 14:40:36 IST 2021
+  Author:  ADMIN
+  Type: BPEL 2.0 Process
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="BPELProcess1"
+               targetNamespace="http://xmlns.oracle.com/GG_DBApplication/GG_DBPollingWriteFile/BPELProcess1"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/GG_DBApplication/GG_DBPollingWriteFile/BPELProcess1"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+               xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/GG_DBApplication/GG_DBPollingWriteFile/DBDataPolling"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/file/GG_DBApplication/GG_DBPollingWriteFile/WriteToFile"
+         xmlns:ui="http://xmlns.oracle.com/soa/designer">
+
+  <!--
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC
+     Set of activities coordinating the flow of messages across the
+     services integrated within this business process
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/GG_DBApplication/GG_DBPollingWriteFile/DBDataPolling"
+          location="../WSDLs/DBDataPolling.wsdl" importType="http://schemas.xmlsoap.org/wsdl/" ui:processWSDL="true"/>
+  <partnerLinks>
+    <partnerLink name="DBDataPolling" partnerLinkType="ns1:DBDataPolling_plt" myRole="DBDataPolling_role"/>
+    <partnerLink name="WriteToFile" partnerLinkType="ns2:Write_plt" partnerRole="Write_role"/>
+  </partnerLinks>
+  <variables>
+    <variable name="ReceiveDBData_receive_InputVariable" messageType="ns1:EmployeeDetailsCollection_msg"/>
+    <variable name="InvokeFileAdapter_Write_InputVariable" messageType="ns2:Write_msg"/>
+  </variables>
+  <sequence name="main">
+    <receive name="ReceiveDBData" createInstance="yes" partnerLink="DBDataPolling" portType="ns1:DBDataPolling_ptt"
+             operation="receive" variable="ReceiveDBData_receive_InputVariable"/>
+    <assign name="AssignDBData">
+      <copy>
+        <from>$ReceiveDBData_receive_InputVariable.EmployeeDetailsCollection</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$InvokeFileAdapter_Write_InputVariable.body</to>
+      </copy>
+    </assign>
+    <invoke name="InvokeFileAdapter" partnerLink="WriteToFile" portType="ns2:Write_ptt"
+            operation="Write" inputVariable="InvokeFileAdapter_Write_InputVariable" bpelx:invokeAsDetail="no"/>
+  </sequence>
+</process>

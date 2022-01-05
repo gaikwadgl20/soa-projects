@@ -1,0 +1,44 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer
+
+  Created: Mon Dec 13 19:09:56 IST 2021
+  Author:  ADMIN
+  Type: BPEL 2.0 Process
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="MessageConsumerBPELProcess"
+               targetNamespace="http://xmlns.oracle.com/GG_JMSDemoApplication/MessageConsumerService/MessageConsumerBPELProcess"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/GG_JMSDemoApplication/MessageConsumerService/MessageConsumerBPELProcess"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+               xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/jms/GG_JMSDemoApplication/MessageConsumerService/MessageConsumerService"
+         xmlns:ui="http://xmlns.oracle.com/soa/designer">
+
+  <!--
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC
+     Set of activities coordinating the flow of messages across the
+     services integrated within this business process
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <import namespace="http://xmlns.oracle.com/pcbpel/adapter/jms/GG_JMSDemoApplication/MessageConsumerService/MessageConsumerService"
+          location="../WSDLs/MessageConsumerService.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"
+          ui:processWSDL="true"/>
+  <partnerLinks>
+    <partnerLink name="MessageConsumerService" partnerLinkType="ns1:Consume_Message_plt" myRole="Consume_Message_role"/>
+  </partnerLinks>
+  <variables>
+    <variable name="ReceiveQueMessage_Consume_Message_InputVariable" messageType="ns1:Consume_Message_msg"/>
+  </variables>
+  <sequence name="main">
+    <receive name="ReceiveQueMessage" partnerLink="MessageConsumerService" portType="ns1:Consume_Message_ptt"
+             operation="Consume_Message" variable="ReceiveQueMessage_Consume_Message_InputVariable"
+             createInstance="yes"/>
+    <exit name="ExitProcess"/>
+  </sequence>
+</process>

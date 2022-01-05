@@ -1,0 +1,43 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="CalculatorDemo"
+     targetNamespace="http://xmlns.oracle.com/SOATestApplication/TestResourceProject/CalculatorDemo"
+     xmlns:tns="http://xmlns.oracle.com/SOATestApplication/TestResourceProject/CalculatorDemo"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    >
+    <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:include schemaLocation="../Schemas/CalculatorDemo.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="requestMessage">
+        <wsdl:part name="part1" element="input"/>
+    </wsdl:message>
+    <wsdl:message name="replyMessage">
+        <wsdl:part name="part1" element="output"/>
+    </wsdl:message>
+    <wsdl:portType name="operations">
+        <wsdl:operation name="addition">
+            <wsdl:input message="tns:requestMessage"/>
+            <wsdl:output message="tns:replyMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="substraction">
+            <wsdl:input message="tns:requestMessage"/>
+            <wsdl:output message="tns:replyMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="execute_bind" type="tns:operations">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="addition">
+            <soap:operation style="document" soapAction="execute"/>
+            <wsdl:input>
+                <soap:body use="literal" namespace="http://xmlns.oracle.com/SOATestApplication/TestResourceProject/CalculatorDemo"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" namespace="http://xmlns.oracle.com/SOATestApplication/TestResourceProject/CalculatorDemo"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+</wsdl:definitions>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org"
+            targetNamespace="http://www.example.org" xmlns:nxsd="http://xmlns.oracle.com/pcbpel/nxsd" nxsd:version="JSON"  elementFormDefault="qualified">
+
+ <xsd:element name="Root-Element" type="EmployeeDetailsCollection"/>
+   <xsd:element name="EmployeeDetails" type="EmployeeDetails"/>
+   <xsd:complexType name="EmployeeDetailsCollection">
+      <xsd:sequence>
+         <xsd:element name="EmployeeDetails" type="EmployeeDetails" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="EmployeeDetails">
+      <xsd:sequence>
+         <xsd:element name="id" type="string50" nillable="true"/>
+         <xsd:element name="empName" type="string100" nillable="true"/>
+         <xsd:element name="empStatus" type="string100" nillable="true"/>
+         <xsd:element name="empDesignation" type="string100" nillable="true"/>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:simpleType name="string50">
+      <xsd:restriction base="xsd:string">
+         <xsd:maxLength value="50"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:simpleType name="string100">
+      <xsd:restriction base="xsd:string">
+         <xsd:maxLength value="100"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+
+</xsd:schema>

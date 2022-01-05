@@ -1,0 +1,23 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Faults>
+   <Fault>
+      <severity>warning</severity>
+      <loc>/ns:composite/ns:reference[@name='CallBPELSOAPService']</loc>
+      <line>39</line>
+      <col>129</col>
+      <file>D:\Learning\SOA\SOATestApplication\SOATokenizerProject\SOA\composite.xml</file>
+      <name>D:\Learning\SOA\SOATestApplication\SOATokenizerProject\SOA\composite.xml</name>
+      <fix/>
+      <msg>Failed to Find Binding "CallBPELSOAPService":"{http://xmlns.oracle.com/SOATestApplication/HelloBPEL/HelloBPELProcess}HelloBPELProcess_pt" in WSDL Manager</msg>
+   </Fault>
+   <Fault>
+      <severity>warning</severity>
+      <loc>/ns:composite/ns:reference[@name='CallBPELSOAPService']</loc>
+      <line>39</line>
+      <col>129</col>
+      <file>D:\Learning\SOA\SOATestApplication\SOATokenizerProject\SOA\composite.xml</file>
+      <name>D:\Learning\SOA\SOATestApplication\SOATokenizerProject\SOA\composite.xml</name>
+      <fix/>
+      <msg>Failed to Find Binding "CallBPELSOAPService":"{http://xmlns.oracle.com/SOATestApplication/HelloBPEL/HelloBPELProcess}HelloBPELProcess_pt" in WSDL Manager</msg>
+   </Fault>
+</Faults>

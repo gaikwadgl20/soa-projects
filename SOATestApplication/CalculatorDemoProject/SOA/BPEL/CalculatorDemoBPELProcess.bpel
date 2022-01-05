@@ -1,0 +1,72 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer
+
+  Created: Tue Nov 30 15:34:05 IST 2021
+  Author:  ADMIN
+  Type: BPEL 2.0 Process
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="CalculatorDemoBPELProcess"
+               targetNamespace="http://xmlns.oracle.com/SOATestApplication/CalculatorDemoProject/CalculatorDemoBPELProcess"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/SOATestApplication/CalculatorDemoProject/CalculatorDemoBPELProcess"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+               xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns1="http://xmlns.oracle.com/SOATestApplication/CalculatorDemoProject/CalculatorDemoService1"
+         xmlns:ns2="http://www.example.org" xmlns:ui="http://xmlns.oracle.com/soa/designer">
+
+  <!--
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC
+     Set of activities coordinating the flow of messages across the
+     services integrated within this business process
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <import namespace="http://xmlns.oracle.com/SOATestApplication/CalculatorDemoProject/CalculatorDemoService1"
+          location="../WSDLs/CalculatorDemoServiceWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"
+          ui:processWSDL="true"/>
+  <partnerLinks>
+    <partnerLink name="CalculateSOAPService" partnerLinkType="ns1:SOAPService" myRole="operations"/>
+  </partnerLinks>
+  <variables>
+    <variable name="OnMessage_addition_InputVariable" messageType="ns1:requestMessage"/>
+    <variable name="OnMessage_substraction_InputVariable" messageType="ns1:requestMessage"/>
+    <variable name="ReplyAddition_addition_OutputVariable" messageType="ns1:replyMessage"/>
+    <variable name="ReplySubstraction_substraction_OutputVariable" messageType="ns1:replyMessage"/>
+  </variables>
+  <sequence name="main">
+    <pick name="PickOperation" createInstance="yes">
+      <onMessage partnerLink="CalculateSOAPService" variable="OnMessage_addition_InputVariable" portType="ns1:operations"
+                 operation="addition">
+        <sequence name="Sequence1">
+          <assign name="AssignAddition">
+            <copy>
+              <from>$OnMessage_addition_InputVariable.part1/ns2:number1 + $OnMessage_addition_InputVariable.part1/ns2:number2</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$ReplyAddition_addition_OutputVariable.part1/ns2:result</to>
+            </copy>
+          </assign>
+          <reply name="ReplyAddition" partnerLink="CalculateSOAPService"
+                 variable="ReplyAddition_addition_OutputVariable" portType="ns1:operations" operation="addition"/>
+        </sequence>
+      </onMessage>
+      <onMessage partnerLink="CalculateSOAPService" variable="OnMessage_substraction_InputVariable" portType="ns1:operations"
+                 operation="substraction">
+        <sequence name="Sequence2">
+          <assign name="AssignSubstraction">
+            <copy>
+              <from>$OnMessage_substraction_InputVariable.part1/ns2:number1 - $OnMessage_substraction_InputVariable.part1/ns2:number2</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$ReplySubstraction_substraction_OutputVariable.part1/ns2:result</to>
+            </copy>
+          </assign>
+          <reply name="ReplySubstraction"
+                 variable="ReplySubstraction_substraction_OutputVariable" partnerLink="CalculateSOAPService"
+                 portType="ns1:operations" operation="substraction"/>
+        </sequence>
+      </onMessage>
+    </pick>
+  </sequence>
+</process>

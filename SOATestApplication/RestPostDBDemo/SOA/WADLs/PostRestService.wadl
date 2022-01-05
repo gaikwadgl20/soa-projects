@@ -1,0 +1,34 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<application xmlns:soa="http://www.oracle.com/soa/rest" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://wadl.dev.java.net/2009/02">
+   <doc title="PostRestService">RestService</doc>
+   <resources>
+      <resource path="/studentsdata/getStudentData">
+         <method name="GET" soa:name="getStudentData">
+            <doc title="POST MergeDataTpDB">Request for inserting json data to DB.</doc>
+            <request>
+               <param name="fname" style="query" type="xsd:string">
+                  <doc title="fname">name of studen</doc>
+               </param>
+               <param name="lname" style="query" type="xsd:string">
+                  <doc title="lname">Last name of student</doc>
+               </param>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json"/>
+            </response>
+            <response status="500"/>
+         </method>
+      </resource>
+      <resource path="/studentsdata/mergeStudentData">
+         <method name="POST" soa:name="MergeStudentData">
+            <request>
+               <representation mediaType="application/json"/>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json"/>
+            </response>
+            <response status="500"/>
+         </method>
+      </resource>
+   </resources>
+</application>

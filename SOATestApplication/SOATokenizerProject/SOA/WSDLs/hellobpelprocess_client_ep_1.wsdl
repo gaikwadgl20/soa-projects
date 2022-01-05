@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+     name="HelloBPELProcess"
+     targetNamespace="http://xmlns.oracle.com/SOATestApplication/HelloBPEL/HelloBPELProcess"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:client="http://xmlns.oracle.com/SOATestApplication/HelloBPEL/HelloBPELProcess"
+     xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    >
+    <wsdl:documentation>
+        <abstractWSDL>http://DESKTOP-CL3R1K9:7101/soa-infra/services/default/HelloBPEL!1.0/WSDLs/HelloBPELProcess.wsdl</abstractWSDL>
+    </wsdl:documentation>
+    <plnk:partnerLinkType name="HelloBPELProcess">
+        <plnk:role name="HelloBPELProcessProvider" portType="client:HelloBPELProcess"/>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/SOATestApplication/HelloBPEL/HelloBPELProcess"
+                 schemaLocation="../Schemas/HelloBPELProcess_3.xsd"/>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="HelloBPELProcessRequestMessage">
+        <wsdl:part name="payload" element="client:process"/>
+    </wsdl:message>
+    <wsdl:message name="HelloBPELProcessResponseMessage">
+        <wsdl:part name="payload" element="client:processResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="HelloBPELProcess">
+        <wsdl:operation name="process">
+            <wsdl:input message="client:HelloBPELProcessRequestMessage"/>
+            <wsdl:output message="client:HelloBPELProcessResponseMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="HelloBPELProcessBinding" type="client:HelloBPELProcess">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="process">
+            <soap:operation style="document" soapAction="process"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="hellobpelprocess_client_ep">
+        <wsdl:port name="HelloBPELProcess_pt" binding="client:HelloBPELProcessBinding">
+            <soap:address location="http://DESKTOP-CL3R1K9:7101/soa-infra/services/default/HelloBPEL/hellobpelprocess_client_ep"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

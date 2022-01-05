@@ -1,0 +1,22 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="BusinessFaultDemoService"
+     targetNamespace="http://xmlns.oracle.com/SOATestApplication/ServiceThatThrowFault/BusinessFaultDemoService"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+     xmlns:bpws="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+     xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+     xmlns:tns="http://xmlns.oracle.com/SOATestApplication/ServiceThatThrowFault/BusinessFaultDemoService"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:ns1="http://www.example.org"
+    >
+    <plnk:partnerLinkType name="SOAPService">
+        <plnk:role name="execute_ptt" portType="tns:execute_ptt"/>
+    </plnk:partnerLinkType>
+    <wsdl:import namespace="http://xmlns.oracle.com/SOATestApplication/ServiceThatThrowFault/BusinessFaultDemoService"
+         location="BusinessFaultDemoService.wsdl"/>
+    <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://www.example.org" schemaLocation="../Schemas/FaultSchema.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+</wsdl:definitions>

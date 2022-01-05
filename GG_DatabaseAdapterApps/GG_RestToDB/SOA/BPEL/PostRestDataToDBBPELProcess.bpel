@@ -1,0 +1,59 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer
+
+  Created: Wed Dec 15 18:15:23 IST 2021
+  Author:  ADMIN
+  Type: BPEL 2.0 Process
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="PostRestDataToDBBPELProcess"
+               targetNamespace="http://xmlns.oracle.com/GG_DBApplication/GG_RestToDB/PostRestDataToDBBPELProcess"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/GG_DBApplication/GG_RestToDB/PostRestDataToDBBPELProcess"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+               xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/GG_DBApplication/GG_RestToDB/MergeEmpDataDBAdapter"
+         xmlns:ui="http://xmlns.oracle.com/soa/designer" xmlns:ns2="http://www.example.org">
+
+  <!--
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC
+     Set of activities coordinating the flow of messages across the
+     services integrated within this business process
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <import namespace="http://www.example.org" location="../Schemas/nxsd_jsonToXml.xsd"
+          importType="http://www.w3.org/2001/XMLSchema"/>
+  <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/GG_DBApplication/GG_RestToDB/MergeEmpDataDBAdapter"
+          location="../WSDLs/MergeEmpDataDBAdapter.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"
+          ui:processWSDL="true"/>
+  <partnerLinks>
+    <partnerLink name="RestPostService" bpelx:wadl="yes"/>
+    <partnerLink name="MergeEmpDataDBAdapter" partnerLinkType="ns1:MergeEmpDataDBAdapter_plt"
+                 partnerRole="MergeEmpDataDBAdapter_role"/>
+  </partnerLinks>
+  <variables>
+    <variable name="InputVariable" element="ns2:Root-Element"/>
+    <variable name="InvokeDBAdapter_merge_InputVariable" messageType="ns1:EmployeeDetailsCollection_msg"/>
+  </variables>
+  <sequence name="main">
+    <receive name="ReceiveRestData" createInstance="yes" partnerLink="RestPostService" variable="InputVariable"
+             bpelx:method="MergeMethod"/>
+    <assign name="Transformation">
+      <bpelx:annotation>
+        <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from>ora:doXSLTransformForDoc("../Transformations/TransformationJson.xsl", $InputVariable)</from>
+        <to variable="InvokeDBAdapter_merge_InputVariable" part="EmployeeDetailsCollection"/>
+      </copy>
+    </assign>
+    <invoke name="InvokeDBAdapter" partnerLink="MergeEmpDataDBAdapter"
+            portType="ns1:MergeEmpDataDBAdapter_ptt" operation="merge"
+            inputVariable="InvokeDBAdapter_merge_InputVariable" bpelx:invokeAsDetail="no"/>
+  </sequence>
+</process>

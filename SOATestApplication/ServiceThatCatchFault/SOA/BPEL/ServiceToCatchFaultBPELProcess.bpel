@@ -1,0 +1,103 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Fri Dec 17 16:04:53 IST 2021
+  Author:  ADMIN
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ServiceToCatchFaultBPELProcess"
+               targetNamespace="http://xmlns.oracle.com/SOATestApplication/ServiceThatCatchFault/ServiceToCatchFaultBPELProcess"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/SOATestApplication/ServiceThatCatchFault/ServiceToCatchFaultBPELProcess"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:ui="http://xmlns.oracle.com/soa/designer"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns1="http://xmlns.oracle.com/SOATestApplication/ServiceThatThrowFault/BusinessFaultDemoService"
+         xmlns:ns2="http://www.example.org">
+
+    <import ui:processWSDL="true" namespace="http://xmlns.oracle.com/SOATestApplication/ServiceThatCatchFault/ServiceToCatchFaultBPELProcess" location="../WSDLs/ServiceToCatchFaultBPELProcess.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="servicetocatchfaultbpelprocess_client" partnerLinkType="client:ServiceToCatchFaultBPELProcess" myRole="ServiceToCatchFaultBPELProcessProvider"/>
+    <partnerLink name="BussinessFault_WS" partnerLinkType="ns1:BussinessFault_WS" partnerRole="execute_ptt"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:ServiceToCatchFaultBPELProcessRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:ServiceToCatchFaultBPELProcessResponseMessage"/>
+    <variable name="InvokeBusinessFaultService_generateFault_InputVariable" messageType="ns1:requestMessage"/>
+    <variable name="InvokeBusinessFaultService_generateFault_OutputVariable" messageType="ns1:replyMessage"/>
+    <variable name="ReplyFaultDetails_process_OutputVariable"
+              messageType="client:ServiceToCatchFaultBPELProcessResponseMessage"/>
+    <variable name="InvokeBusinessFaultService_generateFault_OutputVariable_1" messageType="ns1:replyMessage"/>
+  </variables>
+  <faultHandlers>
+    <catch faultName="ns1:generateFaultfault" faultVariable="FaultVariable" faultElement="ns2:FaultElement">
+      <sequence name="Sequence1">
+        <assign name="AssignFaultDetails">
+          <copy>
+            <from>$FaultVariable/ns2:FaultDetails</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$ReplyFaultDetails_process_OutputVariable.payload/ns2:resElement</to>
+          </copy>
+        </assign>
+        <reply name="ReplyFaultDetails"
+               partnerLink="servicetocatchfaultbpelprocess_client" variable="ReplyFaultDetails_process_OutputVariable"
+               portType="client:ServiceToCatchFaultBPELProcess" operation="process"/>
+      </sequence>
+    </catch>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in ServiceToCatchFaultBPELProcess.wsdl) -->
+    <receive name="receiveInput" partnerLink="servicetocatchfaultbpelprocess_client" portType="client:ServiceToCatchFaultBPELProcess" operation="process" variable="inputVariable" createInstance="yes"/>
+    <assign name="AssignInput">
+      <copy>
+        <from>$inputVariable.payload/ns2:reqElement</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$InvokeBusinessFaultService_generateFault_InputVariable.requestMessage/ns2:reqElement</to>
+      </copy>
+    </assign>
+    <invoke name="InvokeBusinessFaultService" partnerLink="BussinessFault_WS"
+            portType="ns1:execute_ptt" operation="generateFault"
+            inputVariable="InvokeBusinessFaultService_generateFault_InputVariable"
+            outputVariable="InvokeBusinessFaultService_generateFault_OutputVariable" bpelx:invokeAsDetail="no"/>
+    <assign name="AssignResult">
+      <copy>
+        <from>$InvokeBusinessFaultService_generateFault_OutputVariable.replyMessage/ns2:resElement</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns2:resElement</to>
+      </copy>
+    </assign>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="servicetocatchfaultbpelprocess_client" portType="client:ServiceToCatchFaultBPELProcess" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

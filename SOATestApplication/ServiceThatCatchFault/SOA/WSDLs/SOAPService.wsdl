@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+     name="BusinessFaultDemoService"
+     targetNamespace="http://xmlns.oracle.com/SOATestApplication/ServiceThatThrowFault/BusinessFaultDemoService"
+     xmlns:tns="http://xmlns.oracle.com/SOATestApplication/ServiceThatThrowFault/BusinessFaultDemoService"
+     xmlns:inp1="http://www.example.org"
+     xmlns:inp2="http://www.example.org"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    >
+    <wsdl:documentation>
+        <abstractWSDL>http://DESKTOP-CL3R1K9:7101/soa-infra/services/default/ServiceThatThrowFault!1.0/WSDLs/BusinessFaultDemoService.wsdl</abstractWSDL>
+    </wsdl:documentation>
+    <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://www.example.org" schemaLocation="../Schemas/RequestResponse.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://www.example.org" schemaLocation="../Schemas/FaultSchema.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="requestMessage">
+        <wsdl:part name="requestMessage" element="inp1:Request"/>
+    </wsdl:message>
+    <wsdl:message name="replyMessage">
+        <wsdl:part name="replyMessage" element="inp1:Response"/>
+    </wsdl:message>
+    <wsdl:message name="faultMessage">
+        <wsdl:part name="faultMessage" element="inp1:FaultElement"/>
+    </wsdl:message>
+    <wsdl:portType name="execute_ptt">
+        <wsdl:operation name="generateFault">
+            <wsdl:input message="tns:requestMessage"/>
+            <wsdl:output message="tns:replyMessage"/>
+            <wsdl:fault name="generateFaultfault" message="tns:faultMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="execute_pttBinding" type="tns:execute_ptt">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="generateFault">
+            <soap:operation style="document" soapAction="generateFault"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="generateFaultfault">
+                <soap:fault name="generateFaultfault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="SOAPService">
+        <wsdl:port name="execute_pt" binding="tns:execute_pttBinding">
+            <soap:address location="http://DESKTOP-CL3R1K9:7101/soa-infra/services/default/ServiceThatThrowFault/SOAPService"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified"
+	xmlns="http://www.w3.org/2001/XMLSchema">
+	<element name="input">
+		<complexType>
+			<sequence>
+				<element name="number1" type="integer"/>
+    <element name="number2" type="integer"/>
+   </sequence>
+		</complexType>
+	</element>
+ <element name="output">
+		<complexType>
+			<sequence>
+				<element name="result" type="integer"/>
+			</sequence>
+		</complexType>
+	</element>
+</schema>

@@ -1,0 +1,24 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<xs:schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/dbRestPostReference" xmlns="http://xmlns.oracle.com/pcbpel/adapter/db/top/dbRestPostReference" elementFormDefault="qualified" attributeFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <xs:element name="StudentDetailsCollection" type="StudentDetailsCollection"/>
+   <xs:complexType name="StudentDetailsCollection">
+      <xs:sequence>
+         <xs:element name="StudentDetails" type="StudentDetails" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="StudentDetails">
+      <xs:sequence>
+         <xs:element name="id" type="string50" nillable="true"/>
+         <xs:element name="name" type="xs:string" nillable="true"/>
+         <xs:element name="gender" type="string50" nillable="true"/>
+         <xs:element name="class" type="string50" nillable="true"/>
+         <xs:element name="seat" type="string50" nillable="true"/>
+         <xs:element name="club" type="string50" nillable="true"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:simpleType name="string50">
+      <xs:restriction base="xs:string">
+         <xs:maxLength value="50"/>
+      </xs:restriction>
+   </xs:simpleType>
+</xs:schema>

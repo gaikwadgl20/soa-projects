@@ -1,0 +1,102 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Thu Dec 09 19:01:38 IST 2021
+  Author:  ADMIN
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="XmlToJsonConversionBPELProcess"
+               targetNamespace="http://xmlns.oracle.com/SOATestApplication/XmlToJsonConversionDemo/XmlToJsonConversionBPELProcess"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/SOATestApplication/XmlToJsonConversionDemo/XmlToJsonConversionBPELProcess"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:ui="http://xmlns.oracle.com/soa/designer"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:ns1="http://www.example.org"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <import namespace="http://www.example.org" location="../Schemas/nxsd_xmltoJson.xsd"
+          importType="http://www.w3.org/2001/XMLSchema"/>
+  <import ui:processWSDL="true" namespace="http://xmlns.oracle.com/SOATestApplication/XmlToJsonConversionDemo/XmlToJsonConversionBPELProcess" location="../WSDLs/XmlToJsonConversionBPELProcess.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="xmltojsonconversionbpelprocess_client" partnerLinkType="client:XmlToJsonConversionBPELProcess" myRole="XmlToJsonConversionBPELProcessProvider"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:XmlToJsonConversionBPELProcessRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:XmlToJsonConversionBPELProcessResponseMessage"/>
+    <variable name="TranslateVariable" element="ns1:root-element"/>
+    <variable name="TranslateXMLToJson_OutputVar_1" type="xsd:string"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in XmlToJsonConversionBPELProcess.wsdl) -->
+    <receive name="receiveInput" partnerLink="xmltojsonconversionbpelprocess_client" portType="client:XmlToJsonConversionBPELProcess" operation="process" variable="inputVariable" createInstance="yes"/>
+    <assign name="AssignInptuToNativeElement">
+      <copy>
+        <from>$inputVariable.payload/ns1:body</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$TranslateVariable/ns1:body</to>
+      </copy>
+      <copy>
+        <from>$inputVariable.payload/ns1:id</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$TranslateVariable/ns1:id</to>
+      </copy>
+      <copy>
+        <from>$inputVariable.payload/ns1:title</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$TranslateVariable/ns1:title</to>
+      </copy>
+      <copy>
+        <from>$inputVariable.payload/ns1:userid</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$TranslateVariable/ns1:userid</to>
+      </copy>
+    </assign>
+    <assign name="TranslateXMLToJson">
+      <bpelx:annotation>
+        <bpelx:pattern>translate</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from>ora:doTranslateToNative($TranslateVariable, 'Schemas/nxsd_xmltoJson.xsd', 'root-element', 'STRING')</from>
+        <to>$TranslateXMLToJson_OutputVar_1</to>
+      </copy>
+    </assign>
+    <assign name="AssignOutPutofTranslate">
+      <copy>
+        <from>$TranslateXMLToJson_OutputVar_1</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/client:result</to>
+      </copy>
+    </assign>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="xmltojsonconversionbpelprocess_client" portType="client:XmlToJsonConversionBPELProcess" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

@@ -1,0 +1,30 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+   <entry key="student_details.class:db_column_size">50</entry>
+   <entry key="student_details.seat:db_column_not_null">false</entry>
+   <entry key="student_details.gender:db_column_type">VARCHAR</entry>
+   <entry key="student_details.name:db_column_size">100</entry>
+   <entry key="student_details.club:db_column_size">50</entry>
+   <entry key="student_details.seat:db_column_type">VARCHAR</entry>
+   <entry key="student_details:db_table_type">TABLE</entry>
+   <entry key="student_details.gender:db_column_not_null">false</entry>
+   <entry key="student_details.id:db_column_type">VARCHAR</entry>
+   <entry key="student_details.gender:db_column_size">50</entry>
+   <entry key="student_details.class:db_column_not_null">false</entry>
+   <entry key="student_details.club:db_column_not_null">false</entry>
+   <entry key="student_details:db_column_5">club</entry>
+   <entry key="student_details.id:db_column_not_null">false</entry>
+   <entry key="student_details:db_column_4">seat</entry>
+   <entry key="student_details.class:db_column_type">VARCHAR</entry>
+   <entry key="student_details:db_column_3">class</entry>
+   <entry key="student_details:db_column_2">gender</entry>
+   <entry key="student_details.seat:db_column_size">50</entry>
+   <entry key="student_details:db_column_1">name</entry>
+   <entry key="student_details:db_column_0">id</entry>
+   <entry key="root_descriptor_alias">student_details</entry>
+   <entry key="student_details.name:db_column_type">VARCHAR</entry>
+   <entry key="student_details.name:db_column_not_null">false</entry>
+   <entry key="student_details.club:db_column_type">VARCHAR</entry>
+   <entry key="student_details.id:db_column_size">50</entry>
+</properties>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org"
+            targetNamespace="http://www.example.org" xmlns:nxsd="http://xmlns.oracle.com/pcbpel/nxsd" nxsd:version="JSON" elementFormDefault="qualified">
+ <xsd:element name="root-element">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element type="xsd:string" name="body"/>
+                <xsd:element type="xsd:integer" name="id"/>
+                <xsd:element type="xsd:string" name="title"/>
+                <xsd:element type="xsd:integer" name="userid"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

@@ -1,0 +1,40 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer
+
+  Created: Thu Dec 16 18:47:22 IST 2021
+  Author:  ADMIN
+  Type: BPEL 2.0 Process
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="JMSQueConsumer2BPELProcess"
+               targetNamespace="http://xmlns.oracle.com/GG_JMSDemoApplication/JMSMsgQueConsumer2/JMSQueConsumer2BPELProcess"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/GG_JMSDemoApplication/JMSMsgQueConsumer2/JMSQueConsumer2BPELProcess"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+               xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/jms/GG_JMSDemoApplication/JMSMsgQueConsumer2/JMSMsgQueConsumer2">
+
+  <!--
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC
+     Set of activities coordinating the flow of messages across the
+     services integrated within this business process
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <partnerLink name="JMSMsgQueConsumer2" partnerLinkType="ns1:Consume_Message_plt" myRole="Consume_Message_role"/>
+  </partnerLinks>
+  <variables>
+    <variable name="ReceiveMsg_Consume_Message_InputVariable" messageType="ns1:Consume_Message_msg"/>
+  </variables>
+  <sequence name="main">
+    <receive name="ReceiveMsg" createInstance="yes" partnerLink="JMSMsgQueConsumer2"
+             portType="ns1:Consume_Message_ptt" operation="Consume_Message"
+             variable="ReceiveMsg_Consume_Message_InputVariable"/>
+    <exit name="Exit1"/>
+  </sequence>
+</process>

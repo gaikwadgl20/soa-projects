@@ -1,0 +1,13 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Faults>
+   <Fault>
+      <severity>error</severity>
+      <loc/>
+      <line>34</line>
+      <col/>
+      <file>BPEL/RestDBDemoBPELProcess.bpel</file>
+      <name>BPEL/RestDBDemoBPELProcess.bpel</name>
+      <fix/>
+      <msg>Element not completed: 'sequence'</msg>
+   </Fault>
+</Faults>
